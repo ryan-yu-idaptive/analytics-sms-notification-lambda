@@ -1,0 +1,33 @@
+import json
+import requests
+
+def api_test(event, context):
+    cookie = event['access_token']
+    if not cookie:
+        print("error cannot get cookie")
+        exit(1)
+    # remove above section and uncomment below to test
+    #if "cookie" in event:
+    #    headers["Authorization"] = "Bearer " + event['cookie']
+    headers  = {"Content-Type": "application/json", "X-CENTRIFY-NATIVE-CLIENT":"true"}
+    headers["Authorization"] = "Bearer " + cookie
+    resp = requests.post(event['url'], headers = headers ,data=event['arguments'])
+    print(event['url'])
+    print(event['arguments'])
+    if resp.status_code != 200:
+        print('error: ' + str(resp.status_code))
+        exit(1)
+    else:
+        print('Success')
+    return resp.json()
+
+
+
+#####
+# POST
+# Body Arguments
+# {
+#  "url": "https://idaptive-demo.my-qa.centrify.com/<API>",
+#  "arguments": "{\"ID\":\"<USER_ID>\",\"state\":\"Locked\"}"
+#  "access_token": <ACCESS TOKEN>
+#}
